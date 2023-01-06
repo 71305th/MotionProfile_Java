@@ -1,0 +1,76 @@
+package me.hong.mptest1;
+
+public class InterpolatingMap {
+
+    Object key;
+    Object value;
+
+    /**
+     * Implements a table of key-value pairs with linear interpolation between
+     * values.
+     * <p>
+     * If there's no matching key, the value returned will be a linear interpolation
+     * between the keys before and after the provided one.
+     */
+
+    public InterpolatingMap(Object key, Object value) {
+        this.key = key;
+        this.value = value;
+    }
+
+        // Inserts a key-value pair.
+        void insert(const Key&key, const Value&value) {
+            m_container.insert(std::make_pair (key, value));
+        }
+
+        /**
+         * Inserts a key-value pair.
+         */
+
+        void insert(Key&&key, Value&&value) {
+            m_container.insert(std::make_pair (key, value));
+        }
+
+        /**
+         * Returns the value associated with a given key.
+         * <p>
+         * If there's no matching key, the value returned will be a linear
+         * interpolation between the keys before and after the provided one.
+         *
+         * @param key The key.
+         */
+        Value operator[](const Key&key)const
+
+        {
+            using const_iterator = typename std::map < Key, Value >::const_iterator;
+            // Get iterator to upper bound key-value pair for the given key
+            const_iterator upper = m_container.upper_bound(key);
+            // If key > largest key in table, return value for largest table key
+            if (upper == m_container.end()) {
+                return (--upper)->second;
+            }
+            // If key <= smallest key in table, return value for smallest table key
+            if (upper == m_container.begin()) {
+                return upper -> second;
+            }
+            // Get iterator to lower bound key-value pair
+            const_iterator lower = upper;
+            --lower;
+            // Perform linear interpolation between lower and upper bound
+        const double delta = (key - lower -> first) / (upper -> first - lower -> first);
+            return delta * upper -> second + (1.0 - delta) * lower -> second;
+        }
+
+        /**
+         * Clears the contents.
+         */
+        void clear() {
+            m_container.clear();
+        }
+
+        private:
+        std::
+        map<Key, Value> m_container;
+    }
+
+}
